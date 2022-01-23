@@ -6,13 +6,15 @@ import {LotteryPool} from "./LotteryPool.sol";
 
 contract Factory is Ownable {
     address[] public pools;
+    LotteryPool[] public lotteryPools;
 
     event PoolCreated(address token);
 
     function createPool(address _token, address _cToken) public onlyOwner returns (LotteryPool){
         LotteryPool pool = new LotteryPool(_token, _cToken);
         pools.push(address(pool));
-
+        lotteryPools.push(pool);
+        
         emit PoolCreated(_token);
         return pool;
     }
