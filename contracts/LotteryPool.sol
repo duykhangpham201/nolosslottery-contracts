@@ -7,7 +7,9 @@ import {ILotteryPool} from "./interfaces/ILotteryPool.sol";
 import {LendingManager} from "./LendingManager.sol";
 import {ICErc20} from "./interfaces/ICErc20.sol";
 
-contract LotteryPool is ILotteryPool, Ownable, LendingManager {
+import {MockLendingManager} from "./mocks/MockLendingManager.sol";
+
+contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
     IERC20 public token;
     ICErc20 public cToken;
 
