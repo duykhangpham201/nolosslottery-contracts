@@ -38,9 +38,9 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         }
 
         totalValue += _amount;
+        token.transferFrom(msg.sender, address(this), _amount);
         deposit(address(token), address(cToken), _amount);
         emit LotteryEntered(msg.sender, _amount);
-        token.transferFrom(msg.sender, address(this), _amount);
     }
 
     function withdrawLottery(uint256 _amount) override public {
@@ -53,6 +53,7 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         balance[msg.sender] -= _amount;
         emit LotteryWithdrawn(msg.sender, _amount);
 
+        _redeemPrize(_amount);
         token.transfer(msg.sender, _amount);
     }
 
@@ -90,6 +91,9 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         return POOL_FEE;
     }
 
+    function getPlayersLength() public view returns (uint256) {
+        return players.length;
+    }
 
     function _pseudoRandomize() private view returns (uint256) {
         return
@@ -118,12 +122,25 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
     }
 
     function _redeemPrize(uint256 _amount) private {
-        redeem(_amount, true, address(cToken));
+        redeem(_amount, true, address(cToken),address(0));
     }
 
     function _getCTokenBalance() private view returns (uint256) {
         return cToken.balanceOf(address(this));
     }
 
+    function mockFinalized() public onlyOwner {
+        address winner = _pickWinner();
+        uint256 cTokenBalance = _getCTokenBalance();
+
+        redeem(cTokenBalance, true, address(cToken), address(token));
+
+        uint256 curBalance = token.balanceOf(address(this));
+        uint256 feeBalance = curBalance * 0;
+        uint256 winnerBalance = curBalance-feeBalance;
+
+        token.transfer(factory, feeBalance);
+        token.transfer(winner, winnerBalance);
+    }
 
 }
