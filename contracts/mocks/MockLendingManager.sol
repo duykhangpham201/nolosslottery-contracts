@@ -9,7 +9,7 @@ contract MockLendingManager is ILendingManager {
         address _erc20Contract,
         address _cErc20Contract,
         uint256 _numTokensToSupply
-    ) public returns (uint256) {
+    ) override public returns (uint256) {
         MockERC20 underlying = MockERC20(_erc20Contract);
         MockERC20 cToken = MockERC20(_cErc20Contract);
 
@@ -23,7 +23,7 @@ contract MockLendingManager is ILendingManager {
         uint256 amount,
         bool redeemType,
         address _cErc20Contract
-    ) public returns (bool) {
+    ) override public returns (bool) {
         MockERC20 cToken = MockERC20(_cErc20Contract);
 
         if (redeemType == true) {

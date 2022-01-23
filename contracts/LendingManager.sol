@@ -10,7 +10,7 @@ contract LendingManager is ILendingManager {
         address _erc20Contract,
         address _cErc20Contract,
         uint256 _numTokensToSupply
-    ) public returns (uint256) {
+    ) override public returns (uint256) {
         IERC20 underlying = IERC20(_erc20Contract);
         ICErc20 cToken = ICErc20(_cErc20Contract);
 
@@ -30,7 +30,7 @@ contract LendingManager is ILendingManager {
         uint256 amount,
         bool redeemType,
         address _cErc20Contract
-    ) public returns (bool) {
+    ) override public returns (bool) {
         ICErc20 cToken = ICErc20(_cErc20Contract);
 
         // `amount` is scaled up, see decimal table here:

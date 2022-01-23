@@ -27,7 +27,7 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         factory = msg.sender;
     }
 
-    function enterLottery(uint256 _amount) public {
+    function enterLottery(uint256 _amount) override public {
         require(_amount >= 0, "AMOUNT_ENTERED_INVALID");
 
         if (balance[msg.sender] == 0) {
@@ -43,7 +43,7 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         token.transferFrom(msg.sender, address(this), _amount);
     }
 
-    function withdrawLottery(uint256 _amount) public {
+    function withdrawLottery(uint256 _amount) override public {
         require(_amount >= 0, "AMOUNT_ENTERED_INVALID");
         require(
             balance[msg.sender] > 0 && balance[msg.sender] >= _amount,
@@ -56,7 +56,7 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         token.transfer(msg.sender, _amount);
     }
 
-    function finalized() public onlyOwner {
+    function finalized() override public onlyOwner {
         address winner = _pickWinner();
         uint256 cTokenBalance = _getCTokenBalance();
 
@@ -74,15 +74,15 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         POOL_FEE = _amount;
     }
 
-    function getPlayers() public view returns (address[] memory) {
+    function getPlayers() override public view returns (address[] memory) {
         return players;
     }
 
-    function getBalance(address _player) public view returns (uint256) {
+    function getBalance(address _player) override public view returns (uint256) {
         return balance[_player];
     }
 
-    function getFactory() public view returns (address) {
+    function getFactory() override public view returns (address) {
         return factory;
     }
 
