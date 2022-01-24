@@ -1,4 +1,4 @@
-# Rollswap Smart Contracts
+# No Loss Lottery Smart Contracts
 
 An attempt at recreating a no loss lottery - inspired by PoolTogether.
 
