@@ -8,7 +8,6 @@ interface ILotteryPool {
     event WinnerPicked(address winner);
 
     function enterLottery(uint256 amount) external;
-    function withdrawLottery(uint256 amount) external;
     function finalized() external;
 
     function getPlayers() external returns (address[] memory);

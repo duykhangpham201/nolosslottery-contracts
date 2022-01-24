@@ -43,25 +43,16 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
         emit LotteryEntered(msg.sender, _amount);
     }
 
-    function withdrawLottery(uint256 _amount) override public {
-        require(_amount >= 0, "AMOUNT_ENTERED_INVALID");
-        require(
-            balance[msg.sender] > 0 && balance[msg.sender] >= _amount,
-            "BALANCE_INVALID"
-        );
-
-        balance[msg.sender] -= _amount;
-        emit LotteryWithdrawn(msg.sender, _amount);
-
-        _redeemPrize(_amount);
-        token.transfer(msg.sender, _amount);
-    }
-
     function finalized() override public onlyOwner {
         address winner = _pickWinner();
         uint256 cTokenBalance = _getCTokenBalance();
 
         _redeemPrize(cTokenBalance);
+
+        for (uint256 i = 0; i < players.length; i++) {
+            uint256 playerBalance = balance[players[i]];
+            token.transfer(players[i], playerBalance);
+        }
 
         uint256 curBalance = token.balanceOf(address(this));
         uint256 feeBalance = curBalance * POOL_FEE;
@@ -127,20 +118,6 @@ contract LotteryPool is ILotteryPool, Ownable, MockLendingManager {
 
     function _getCTokenBalance() private view returns (uint256) {
         return cToken.balanceOf(address(this));
-    }
-
-    function mockFinalized() public onlyOwner {
-        address winner = _pickWinner();
-        uint256 cTokenBalance = _getCTokenBalance();
-
-        redeem(cTokenBalance, true, address(cToken), address(token));
-
-        uint256 curBalance = token.balanceOf(address(this));
-        uint256 feeBalance = curBalance * 0;
-        uint256 winnerBalance = curBalance-feeBalance;
-
-        token.transfer(factory, feeBalance);
-        token.transfer(winner, winnerBalance);
     }
 
 }

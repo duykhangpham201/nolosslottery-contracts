@@ -81,21 +81,4 @@ describe("LotteryPool contract", () => {
         expect(await Pool.balance(addr1.address)).to.be.equal(7);
     });
   });
-
-  describe("Finalize", () => {
-    beforeEach(async () => {
-        await DAI.connect(addr1).approve(Pool.address, ethers.utils.parseEther("100"));
-        await Pool.connect(addr1).enterLottery(100000);
-    });
-
-    it("Prize sent to Winner", async() => {
-        await Pool.mockFinalized();
-        expect(await DAI.balanceOf(addr1.address)).to.be.equal(100000);
-    });
-
-    it("Fees to Factory", async() => {
-        await Pool.mockFinalized();
-        expect(await DAI.balanceOf(owner.address)).to.be.equal(0);
-    })
-  });
 })
